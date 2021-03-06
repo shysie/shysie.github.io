@@ -58,8 +58,8 @@
     </header>
      
     <div class="article-meta">
-      <a href="/2017/11/27/sliding-win/" class="article-date">
-  <time datetime="2017-11-27T17:54:09.000Z" itemprop="datePublished">2017-11-27</time>
+      <a href="/2021/01/27/sliding-win/" class="article-date">
+  <time datetime="2021-01-27T17:54:09.000Z" itemprop="datePublished">2021-01-27</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
@@ -75,7 +75,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> Reading time≈</span>
-            <span class="post-count">6 min</span>
+            <span class="post-count">7 min</span>
         </span>
     </span>
 </div>
@@ -97,28 +97,25 @@
 <p>It’s <strong>O(n^2)</strong> at first glance, but it can essentially be <strong>O(nlogn)</strong> or <strong>O(n)</strong> depending on how condition is designed and met.  So double pointers algorithm can effectively <em>kill</em> tons of solution space to land on a <strong>O(n)</strong> time complexity.</p>
 <p>This article summarizes several applications of the double pointer algorithm in array-like topics.</p>
 <h3 id="Colliding-Pointers"><a class="header-anchor" href="#Colliding-Pointers">¶</a>Colliding Pointers</h3>
-<p>The first kind of double pointer algorithms are AKA sliding windows. Normally there will be two pointers from both end of an array and the search scope will narrow down. The data is typically sorted. A valid question to ask is, how to ensure that the sliding window covers all feasible solutions? Let’s dive in.</p>
-<ul>
-<li>Two Sum(sorted)</li>
-<li>Container With Most Water</li>
-</ul>
-<p>167 - two sum(sorted)<br>
+<p>The first kind of double pointer algorithms are AKA sliding windows. Normally there will be two pointers from both end of an array and the search scope will narrow down. The data is typically sorted. A valid question to ask is, how to ensure that the sliding window covers all feasible solutions? Let’s dive in.<br>
+*<a href="#TwoSum">167-Two sum(sorted)</a><br>
+*<a href="#mostwater">11-Container With Most Water</a></p>
+<p><a name="TwoSum"> 167-Two sum(sorted) </a><br>
 Given an array of integers <code>numbers</code> that is already *<strong>sorted in ascending order*</strong>, find two numbers such that they add up to a specific <code>target</code> number.</p>
 <p>Return the indices of the two numbers (<strong>1-indexed</strong>) as an integer array <code>answer</code> of size <code>2</code>, where <code>1 &lt;= answer[0] &lt; answer[1] &lt;= numbers.length</code>.</p>
 <p><strong>Attack</strong></p>
 <p>Set two pointers <code>i</code> and <code>j</code> at begin and last element. The branch pruning (or solution space compression) strategy is, if <code>answer[i]+answer[j]&lt;target</code>, <code>answer[i]</code> can be excluded from searching because <code>answer[i]+answer[k]&lt;targer,k&lt;j</code>.</p>
-<p>11 -  Container With Most Water</p>
-<p>Given <code>n</code> non-negative integers <code>a1, a2, ..., an</code> , where each represents a point at coordinate <code>(i, ai)</code>. <code>n</code> vertical lines are drawn such that the two endpoints of the line <code>i</code> is at <code>(i, ai)</code> and <code>(i, 0)</code>. Find two lines, which, together with the x-axis forms a container, such that the container contains the most water.</p>
+<p><a name="mostwater">11-Container With Most Water</a><br>
+Given <code>n</code> non-negative integers <code>a1, a2, ..., an</code> , where each represents a point at coordinate <code>(i, ai)</code>. <code>n</code> vertical lines are drawn such that the two endpoints of the line <code>i</code> is at <code>(i, ai)</code> and <code>(i, 0)</code>. Find two lines, which, together with the x-axis forms a container, such that the container contains the most water.</p>
 <img src="https://s3-lc-upload.s3.amazonaws.com/uploads/2018/07/17/question_11.jpg" style="zoom:50%;" />
 <p><strong>Attack</strong></p>
 <p>Pretty similar to previous one: if <code>min(ai,aj)*(aj-ai+1)&lt;current_max</code>, <code>min(ai,aj)</code> can be excluded from searching because <code>cureent_max</code> can never be attained.</p>
 <h3 id="Chasing-Pointers"><a class="header-anchor" href="#Chasing-Pointers">¶</a>Chasing Pointers</h3>
-<p>Chasing pointers is a pair of pointes starting one end and the left one chaseing the right. It’s a variant or representation of sliding window.</p>
-<ul>
-<li>Longest Substring Without Repeating Characters</li>
-<li>Delete Sublist to Make Sum Divisible By K</li>
-</ul>
-<p>3 - Longest Substring Without Repeating Characters</p>
+<p>Chasing pointers is a pair of pointes starting one end and the left one chaseing the right. It’s a variant or representation of sliding window.<br>
+*<a href="#longest">3-Longest Substring Without Repeating Characters</a><br>
+*<a href="#deletesub">1590-Delete Sublist to Make Sum Divisible By K</a><br>
+*<a href="#subarray">713-Subarray Product Less Than K</a></p>
+<p><a name="longest">3-Longest Substring Without Repeating Characters</a></p>
 <p>Given a string s, find the length of the longest substring without repeating characters.</p>
 <p><strong>Attack</strong></p>
 <p>If <code>s[start]...s[end]</code> satisfies, keep pushing right boundary, otherwise, <code>s[end]</code> is a repeat of some char with the above range. Find that first occurance, say index <code>j</code>, then start from <code>j+1</code>. Here we prove by contradiction why there is no missing feasible solution.<br>
@@ -141,21 +138,19 @@ Similar problems:</p>
 </ol>
 </li>
 </ul>
-<p>1590 - Delete Sublist to Make Sum Divisible By K</p>
-<p>You are given a list of positive integers nums and a positive integer k. Return the length of the shortest sublist (can be empty sublist ) you can delete such that the resulting list’s sum is divisible by k. You cannot delete the entire list. If it’s not possible, return -1.</p>
+<p><a name="deletesub">1590-Delete Sublist to Make Sum Divisible By K </a><br>
+You are given a list of positive integers nums and a positive integer k. Return the length of the shortest sublist (can be empty sublist ) you can delete such that the resulting list’s sum is divisible by k. You cannot delete the entire list. If it’s not possible, return -1.</p>
 <p><strong>Attack</strong></p>
 <p>You need the help from hashtable to record the mods of prefix sums. The main point of this problem is: <code>remainderSum = totalSum - prefixsum[j] + prefixsum[i], i &lt; j</code> and it has to meet the requirement that <code>mod(remainderSum,k)===0</code>. With the pointer increments, <code>mod(prefimsum[i],k)</code> can be recoreded and updated by a hastable. Say <code>prefixsum[m]-prefixsum[n], m &gt; n</code>, is a multiple of <code>k</code> , entry <code>prefixsum[n]</code> will be flushed out by <code>prefixsum[m]</code> as they both meet the requirement. Looks though only once pointer is used, the hashtable acts as a pointer.</p>
-<p>713 - Subarray Product Less Than K</p>
-<p>Your are given an array of positive integers nums.</p>
+<p><a name="subarray">713-Subarray Product Less Than K</a><br>
+Your are given an array of positive integers nums.</p>
 <p>Count and print the number of (contiguous) subarrays where the product of all the elements in the subarray is less than k.</p>
 <p><strong>Attack</strong><br>
 The solution space can be viewed as a union of <code>A_j, 0&lt;j&lt;n</code>, where <code>A_j</code> is the set of solutions ended with <code>j</code>(included). <code>[i...j]</code> being a solution implies <code>[i+1...j],...,[j-1...j]</code> are all solutions. With these, we can increment right boundary <code>j</code> and find the left boundary <code>i</code> under a certain <code>j</code>. Moving to next <code>j</code>, the last left boundary <code>i</code> can be reused.</p>
 <h3 id="Fast-and-Slow-Ponters"><a class="header-anchor" href="#Fast-and-Slow-Ponters">¶</a>Fast and Slow Ponters</h3>
-<p>The fast and slow pointers are also double pointers, but the two pointers traverse the array from the same side, defining the two pointers as fast and slow respectively, and the two pointers move with different strategies until the values of the two pointers are equal (or other special conditions), e.g. fast grows by two at a time and slow grows by one at a time.</p>
-<ul>
-<li>Remove Duplicates from Sorted Array</li>
-</ul>
-<p>26 - Remove Duplicates from Sorted Array<br>
+<p>The fast and slow pointers are also double pointers, but the two pointers traverse the array from the same side, defining the two pointers as fast and slow respectively, and the two pointers move with different strategies until the values of the two pointers are equal (or other special conditions), e.g. fast grows by two at a time and slow grows by one at a time.<br>
+*<a href="#redup">26-Remove Duplicates from Sorted Array</a></p>
+<p><a name="redup">26-Remove Duplicates from Sorted Array</a><br>
 Given a sorted array nums, remove the duplicates in-place such that each element appears only once and returns the new length.</p>
 <p><strong>Attack</strong><br>
 After the array is sorted, we can place two pointers i and j, where i is the slow pointer and j is the fast pointer. As soon as <code>nums[i] = nums[j]</code>, we increment j to skip duplicate items. when encountered <code>nums[j]!=nums[i]</code>, copy its <code>nums[j]</code> to <code>nums[i+1]</code>. Then increment i.</p>
@@ -225,7 +220,7 @@ After the array is sorted, we can place two pointers i and j, where i is the slo
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://shiqianshen.github.io/2017/11/27/sliding-win/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://shiqianshen.github.io/2021/01/27/sliding-win/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -238,15 +233,20 @@ After the array is sorted, we can place two pointers i and j, where i is the slo
    
   <nav class="article-nav">
     
-      <a href="/2017/11/27/id-nn/" class="article-nav-link">
+      <a href="/2021/02/22/hello-world/" class="article-nav-link">
         <strong class="article-nav-caption">Prev article</strong>
         <div class="article-nav-title">
           
-            Automatic ID Card Information Acquisition
+            Hello World
           
         </div>
       </a>
     
+    
+      <a href="/2017/11/27/id-nn/" class="article-nav-link">
+        <strong class="article-nav-caption">Next article</strong>
+        <div class="article-nav-title">Automatic ID Card Information Acquisition</div>
+      </a>
     
   </nav>
 
