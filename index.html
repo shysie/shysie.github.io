@@ -169,46 +169,15 @@
        
   <h1>A easy guide to gradients of softmax cross entropy loss</h1>
 <h2 id="Softmax-function"><a class="header-anchor" href="#Softmax-function">¶</a>Softmax function</h2>
-<p>The softmax function, generally in neural networks, is pervasively used as the output layer of a classification task. In fact, you can think of softmax as outputting the probability of several category selections. For example, if I have a classification task to be divided into three categories, the softmax function can output the probability of three category selections based on their relative sizes, and the probability sums to 1. The input to softmax function is often called logits <code>z_i</code>. The function comes in the following form.<br>
+<p>The softmax function, generally in neural networks, is pervasively used as the output layer of a classification task. In fact, you can think of softmax as outputting the probability of several category selections. For example, if I have a classification task to be divided into three categories, the softmax function can output the probability of three category selections based on their relative sizes, and the probability sums to 1. The input to softmax function is often called logits <code>z_i</code>. The function comes in the following form.</p>
+<p>$$<br>
+a_i = \frac{e^{z_i}}{\sum_k e^{z_k}}<br>
 $$<br>
-a_i = \frac{e<sup>{z_i}}{\sum_ke</sup>{z_k}}<br>
-$$<br>
-So it’s easy to see that this function is a multiple-input-multiple-output mapping.</p>
-<h2 id="Cross-entropy-loss-function"><a class="header-anchor" href="#Cross-entropy-loss-function">¶</a>Cross-entropy loss function</h2>
-<p>The loss function can take many forms, and the cross-entropy function is used here mainly because this derivative is relatively simple and easy to compute, and cross-entropy solves the problem of slow learning of certain loss functions. The cross-entropy function looks like,<br>
-$$<br>
-L(z_i,y_i) = -\sum_iy_ilna_i<br>
-$$<br>
-where <code>y_i</code>is so called labels standing for the true category each sample input falls into. The loss <code>L</code>is a multivariant function, thus the gradients would flow into both logits and labels. But since labels are not usually trainable variables, to disallow back propagation into labels, it’s practical to pass label tensors through <a target="_blank" rel="noopener" href="https://www.tensorflow.org/api_docs/python/tf/stop_gradient"><code>tf.stop_gradient</code></a> before feeding it to this function in Tensorflow.</p>
-<h2 id="Chain-Rule"><a class="header-anchor" href="#Chain-Rule">¶</a>Chain Rule</h2>
-<p>To obtain the gradient of loss w.r.t. <code>z_i</code>, simply apply the chain rule resulting,<br>
-$$<br>
-\frac{\partial L}{\partial z_i} = \frac{\partial L}{\partial a_j}\frac{\partial a_j}{\partial z_i}<br>
-$$</p>
-<p>After necessary derivations(<a target="_blank" rel="noopener" href="https://peterroelants.github.io/posts/cross-entropy-softmax/">ref</a>), we easily landed on<br>
-$$<br>
-\frac{\partial L}{\partial a_j}=-\frac{y_i}{a_i}, \frac{\partial a_j}{\partial z_i}=a_i(\delta_{ij}-a_j)<br>
-$$<br>
-Plug back to the gradient of loss w.r.t. <code>z_i</code>,<br>
-$$<br>
-\frac{\partial L}{\partial z_i}=a_i-y_i<br>
-$$</p>
-<h2 id="Story-not-finished"><a class="header-anchor" href="#Story-not-finished">¶</a>Story not finished</h2>
-<p>In Tensorflow, the computation of gradient for op <code>tf.nn.softmax_cross_entropy_with_logits</code> is implemented <a target="_blank" rel="noopener" href="https://github.com/tensorflow/tensorflow/blob/051a96f3ec4fc38b248e8ae8ad2f8ad124eda59b/tensorflow/python/ops/nn_grad.py#L512">here</a>.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">def _SoftmaxCrossEntropyWithLogitsGrad(op, grad_loss, grad_grad):</span><br><span class="line">  &quot;&quot;&quot;Gradient function for SoftmaxCrossEntropyWithLogits.&quot;&quot;&quot;</span><br><span class="line">  # grad_loss is the backprop for cost, and we multiply it with the gradients</span><br><span class="line">  # (which is output[1])</span><br><span class="line">  # grad_grad is the backprop for softmax gradient.</span><br><span class="line">  #</span><br><span class="line">  # Second derivative is just softmax derivative w.r.t. logits.</span><br><span class="line">  softmax_grad &#x3D; op.outputs[1]</span><br><span class="line">  grad &#x3D; _BroadcastMul(grad_loss, softmax_grad)</span><br><span class="line"></span><br><span class="line">  logits &#x3D; op.inputs[0]</span><br><span class="line">  if (grad_grad is not None and</span><br><span class="line">      not getattr(grad_grad, &quot;_is_zeros_tensor&quot;, False)):</span><br><span class="line">    softmax &#x3D; nn_ops.softmax(logits)</span><br><span class="line"></span><br><span class="line">    grad +&#x3D; ((grad_grad - array_ops.squeeze(</span><br><span class="line">        math_ops.matmul(</span><br><span class="line">            array_ops.expand_dims(grad_grad, 1),</span><br><span class="line">            array_ops.expand_dims(softmax, 2)),</span><br><span class="line">        axis&#x3D;1)) * softmax)</span><br><span class="line"></span><br><span class="line">  return grad, _BroadcastMul(grad_loss, -nn_ops.log_softmax(logits))</span><br></pre></td></tr></table></figure>
-<p>Why does it add another layer of complexity to what we discuss above? We can find the answer in chain rule again.</p>
-<p>In the forward path, the gradient of loss w.r.t. logits has been computed and stored as input[1]. So the op actually takes 2 inputs(logits and labels) and returns 2 outputs (loss and  gradient of loss w.r.t. logits ). Therefore, both of these outputs need to backpropagate into logits. <code>grad_loss</code> and <code>grad_grad</code> can be understood as<br>
-$$<br>
-GL=\frac{\partial \cdot}{\partial L}, GG =\frac{\partial \cdot}{\partial \frac{\partial L}{\partial z_i}}<br>
-$$</p>
-<p>To obtain the gradient of loss w.r.t. logits, a compound chain rule as needed.<br>
-$$<br>
-\frac{\partial \cdot}{\partial z_i} = GL\cdot\frac{\partial L}{\partial z_i}+GG \cdot \frac{\partial ^2 L}{\partial z_i^2}, \frac{\partial ^2 L}{\partial z_i^2} = \frac{\partial  a_i}{\partial z_i}=(1-a_i)a_i<br>
-$$<br>
-These are the additional terms appended by <code>grad +=...</code>.</p>
-<h2 id="Conclusion"><a class="header-anchor" href="#Conclusion">¶</a>Conclusion</h2>
-<p>In really application, <code>grad_grad</code> may not even be used or passed in, but it’s necessary to know the details so as not to miss any possibilities.</p>
- 
+So it’s easy to see that this function is a multiple-input-multiple-output mapping.</p> 
+      <a class="article-more-link" href="/2021/03/06/softmaxGradient/"
+        >Read more...</a
+      >
+       
       <!-- reward -->
       
     </div>
@@ -354,7 +323,7 @@ These are the additional terms appended by <code>grad +=...</code>.</p>
     <header class="article-header">
        
 <h2 itemprop="name">
-  <a class="article-title" href="/2021/01/27/sliding-win/"
+  <a class="article-title" href="/2020/10/17/sliding-win/"
     >Algorithm - Double pointers</a> 
 </h2>
  
@@ -362,8 +331,8 @@ These are the additional terms appended by <code>grad +=...</code>.</p>
     </header>
      
     <div class="article-meta">
-      <a href="/2021/01/27/sliding-win/" class="article-date">
-  <time datetime="2021-01-27T17:54:09.000Z" itemprop="datePublished">2021-01-27</time>
+      <a href="/2020/10/17/sliding-win/" class="article-date">
+  <time datetime="2020-10-17T18:14:09.000Z" itemprop="datePublished">2020-10-17</time>
 </a>    
     </div>
       

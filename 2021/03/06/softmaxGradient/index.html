@@ -66,7 +66,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> Word count:</span>
-            <span class="post-count">623</span>
+            <span class="post-count">624</span>
         </span>
     </span>
 
@@ -92,11 +92,12 @@
        
   <h1>A easy guide to gradients of softmax cross entropy loss</h1>
 <h2 id="Softmax-function"><a class="header-anchor" href="#Softmax-function">¶</a>Softmax function</h2>
-<p>The softmax function, generally in neural networks, is pervasively used as the output layer of a classification task. In fact, you can think of softmax as outputting the probability of several category selections. For example, if I have a classification task to be divided into three categories, the softmax function can output the probability of three category selections based on their relative sizes, and the probability sums to 1. The input to softmax function is often called logits <code>z_i</code>. The function comes in the following form.<br>
-$$<br>
-a_i = \frac{e<sup>{z_i}}{\sum_ke</sup>{z_k}}<br>
+<p>The softmax function, generally in neural networks, is pervasively used as the output layer of a classification task. In fact, you can think of softmax as outputting the probability of several category selections. For example, if I have a classification task to be divided into three categories, the softmax function can output the probability of three category selections based on their relative sizes, and the probability sums to 1. The input to softmax function is often called logits <code>z_i</code>. The function comes in the following form.</p>
+<p>$$<br>
+a_i = \frac{e^{z_i}}{\sum_k e^{z_k}}<br>
 $$<br>
 So it’s easy to see that this function is a multiple-input-multiple-output mapping.</p>
+<a id="more"></a>
 <h2 id="Cross-entropy-loss-function"><a class="header-anchor" href="#Cross-entropy-loss-function">¶</a>Cross-entropy loss function</h2>
 <p>The loss function can take many forms, and the cross-entropy function is used here mainly because this derivative is relatively simple and easy to compute, and cross-entropy solves the problem of slow learning of certain loss functions. The cross-entropy function looks like,<br>
 $$<br>
