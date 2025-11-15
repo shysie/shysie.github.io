@@ -9,7 +9,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    Archives: 2017/11 |  Shysie&#39;s doodling board
+    A easy guide to gradients of softmax cross entropy loss |  Shysie&#39;s doodling board
   </title>
   <meta name="generator" content="hexo-theme-ayer">
   
@@ -39,52 +39,210 @@
       
     <main class="content on">
       <section class="outer">
-  
-  
-  <article class="articles">
+  <article
+  id="post-softmaxentGraident"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
     
-    
-    <h1 class="page-type-title">2017/11</h1>
-    
-    
-  
-  
-  
-  
-  
-  
-  <div class="archives-wrap">
-    <div class="archive-year-wrap">
-      <a href="/archives/2017" class="archive-year">2017</a>
-    </div>
-    <div class="archives">
-      
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2017/11/27/id-nn/" class="archive-article-date">
-  <time datetime="2017-11-27T17:54:09.000Z" itemprop="datePublished">11/27</time>
-</a>
+    <header class="article-header">
        
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2017/11/27/id-nn/"
-    >Automatic ID Card Information Acquisition</a> 
-</h2>
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  A easy guide to gradients of softmax cross entropy loss
+</h1>
  
 
     </header>
-    
-    
-  </div>
-</article>
-      
-      
+     
+    <div class="article-meta">
+      <a href="/2021/03/06/softmaxentGraident/" class="article-date">
+  <time datetime="2021-03-06T18:22:24.826Z" itemprop="datePublished">2021-03-06</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">278</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">1 min</span>
+        </span>
+    </span>
+</div>
+ 
     </div>
-  </div>
-  
-  
+      
+    <div class="tocbot"></div>
+
+
+
 
   
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1>A easy guide to gradients of softmax cross entropy loss</h1>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/c02a1fbffad6">https://www.jianshu.com/p/c02a1fbffad6</a></p>
+<h2 id="Softmax-function"><a class="header-anchor" href="#Softmax-function">¶</a>Softmax function</h2>
+<p>The softmax function, generally in neural networks, can be used as the output layer of a classification task. In fact, you can think of softmax as outputting the probability of several category selections. For example, if I have a classification task to be divided into three categories, the softmax function can output the probability of three category selections based on their relative sizes, and the probability sums to 1. The input to softmax function is often called logits <code>z_i</code>. The function comes in the following form.<br>
+$$<br>
+a_i = \frac{e<sup>{z_i}}{\sum_ke</sup>{z_k}}<br>
+$$<br>
+So it’s easy to see that this function is a multiple-input-multiple-output mapping, whose gradients will be a Jacobian matrix with element,<br>
+$$<br>
+\frac{\partial a_i}{\partial z_j}<br>
+$$</p>
+<h2 id="Cross-entropy-loss-function"><a class="header-anchor" href="#Cross-entropy-loss-function">¶</a>Cross-entropy loss function</h2>
+<p>The loss function can take many forms, and the cross-entropy function is used here mainly because this derivative is relatively simple and easy to compute, and cross-entropy solves the problem of slow learning of certain loss functions. The cross-entropy function looks like,<br>
+$$<br>
+L(z_i,y_i) = -\sum_iy_ilna_i<br>
+$$<br>
+where <code>y_i</code>is so called labels standing for the true category each sample input falls into. The loss <code>L</code>is a multivariant function, thus the gradients would flow into both logits and labels. But since labels are not usually trainable variables, to disallow back propagation into labels, it’s practical to pass label tensors through <a target="_blank" rel="noopener" href="https://www.tensorflow.org/api_docs/python/tf/stop_gradient"><code>tf.stop_gradient</code></a> before feeding it to this function in Tensorflow.</p>
+<h2 id="Chain-Rule"><a class="header-anchor" href="#Chain-Rule">¶</a>Chain Rule</h2>
+<p>Simply applying chain rule of,<br>
+$$<br>
+\frac{\partial L}{\partial z_i} = \frac{\partial L}{\partial a_i}\frac{\partial a_i}{\partial z_}<br>
+$$</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>Copyright： </strong>
+          
+          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
+          
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        share
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://shiqianshen.github.io/2021/03/06/softmaxentGraident/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Machine-Learning/" rel="tag">Machine Learning</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Softmax-Cross-Entropy/" rel="tag">Softmax Cross Entropy</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tensorflow/" rel="tag">Tensorflow</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2025/11/15/lint-code/" class="article-nav-link">
+        <strong class="article-nav-caption">Prev article</strong>
+        <div class="article-nav-title">
+          
+            Progress of my Lintcode 2025
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/02/25/Leetcode-booking/" class="article-nav-link">
+        <strong class="article-nav-caption">Next article</strong>
+        <div class="article-nav-title">Booking of my Leetcode</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+     
+</article>
+
 </section>
       <footer class="footer">
   <div class="outer">
@@ -228,6 +386,23 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
